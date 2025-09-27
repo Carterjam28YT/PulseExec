@@ -1,0 +1,81 @@
+--[[
+-==+INFO+==-
+Version: 1.00
+Author: CarterJam28YT (On youTube btw)
+Description: A simple status checker for creators
+LINKZ: https://guns.lol/carterjam28yt
+Protected with MIT license
+]]--
+--za function
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+
+-- brain numming way to create a persistent environment
+local persistentEnv = (getgenv and getgenv()) or _G
+
+-- player info
+local executorInfo = {
+    name = "Unknown Executor",
+    guiLoaded = false,
+    timesExecuted = 0,
+    lastExecuted = "N/A",
+    placeId = game.PlaceId,
+    playerName = player and player.Name or "Unknown",
+    robloxVersion = "Unknown",
+    exploitFeatures = {}
+}
+
+-- Detect executor name (if possible)
+if (identifyexecutor) then
+    local success, result = pcall(identifyexecutor)
+    if success and result then
+        executorInfo.name = result
+    end
+end
+
+-- Detect Roblox/exploit version (if possible pstt... its probably not gonna work)
+if (syn) then
+    executorInfo.robloxVersion = "Synapse X"
+elseif (KRNL_LOADED) then
+    executorInfo.robloxVersion = "Krnl"
+elseif (secure_load) then
+    executorInfo.robloxVersion = "Other Exploit"
+end
+
+-- brain hurting way to track times executed and last executed
+persistentEnv.__executor_times_executed = (persistentEnv.__executor_times_executed or 0) + 1
+executorInfo.timesExecuted = persistentEnv.__executor_times_executed
+executorInfo.lastExecuted = os.date("%Y-%m-%d %H:%M:%S", os.time())
+
+-- loading GUI status fuction
+executorInfo.guiLoaded = true
+
+-- Add detected exploit features
+if (drawtext or drawing) then table.insert(executorInfo.exploitFeatures, "Drawing API") end
+if (firetouchinterest) then table.insert(executorInfo.exploitFeatures, "FireTouchInterest") end
+if (sethiddenproperty) then table.insert(executorInfo.exploitFeatures, "SetHiddenProperty") end
+
+-- Print
+local function printExecutorStatus()
+    print("===== Status =====")
+    print("🧩 Executor: " .. executorInfo.name)
+    print("✅ GUI Loaded: " .. tostring(executorInfo.guiLoaded))
+    print("🔁 Times Script Executed: " .. tostring(executorInfo.timesExecuted))
+    print("🕒 Last Executed: " .. tostring(executorInfo.lastExecuted))
+    print("🆔 Place ID: " .. tostring(executorInfo.placeId))
+    print("👤 Player Name: " .. tostring(executorInfo.playerName))
+    print("🛠️ Exploit Version: " .. executorInfo.robloxVersion)
+    
+    if #executorInfo.exploitFeatures > 0 then
+        print("⚡ Exploit Features Detected: " .. table.concat(executorInfo.exploitFeatures, ", "))
+    else
+        print("⚡ Exploit Features Detected: None")
+    end
+    
+    print("===========================")
+end
+
+-- Print initial status
+printExecutorStatus()
